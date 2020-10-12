@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import ButtonFilled from '../../components/Button/ButtonFilled';
 import { StyledTab, TabPanel } from '../../components/Tabs';
 import Scaffold from '../../containers/layouts/Scaffold';
+import * as WorkflowActions from '../../redux/actions/workflow';
 import useActions from '../../redux/actions';
 import * as TabActions from '../../redux/actions/tabs';
 import * as TemplateSelectionActions from '../../redux/actions/template';
@@ -21,7 +22,7 @@ import useStyles from './styles';
 const Workflows = () => {
   const classes = useStyles();
   const { t } = useTranslation();
-
+  const workflow = useActions(WorkflowActions);
   const template = useActions(TemplateSelectionActions);
   const workflowTabValue = useSelector(
     (state: RootState) => state.tabNumber.workflows
@@ -35,6 +36,9 @@ const Workflows = () => {
   };
 
   const handleScheduleWorkflow = () => {
+    workflow.setWorkflowDetails({
+      updatingSchedule: false,
+    });
     template.selectTemplate({ selectedTemplateID: 0, isDisable: true });
     history.push('/create-workflow');
   };

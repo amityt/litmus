@@ -8,6 +8,7 @@ import InputField from '../../../components/InputField';
 import PredifinedWorkflows from '../../../components/PredifinedWorkflows';
 import workflowsList from '../../../components/PredifinedWorkflows/data';
 import Unimodal from '../../../containers/layouts/Unimodal';
+import { WorkflowData } from '../../../models/redux/workflow';
 import useActions from '../../../redux/actions';
 import * as TemplateSelectionActions from '../../../redux/actions/template';
 import * as WorkflowActions from '../../../redux/actions/workflow';
@@ -28,7 +29,9 @@ const ChooseWorkflow: React.FC = () => {
   const selectedTemplateID = useSelector(
     (state: RootState) => state.selectTemplate.selectedTemplateID
   );
-
+  const workflowData: WorkflowData = useSelector(
+    (state: RootState) => state.workflowData
+  );
   const [open, setOpen] = React.useState(false);
   const isSuccess = React.useRef<boolean>(false);
   const [workflowDetails, setWorkflowData] = useState({
@@ -65,9 +68,9 @@ const ChooseWorkflow: React.FC = () => {
   };
 
   /*
-	const { analyticsData } = useSelector(
-		(state: RootState) => state
-	);
+  const { analyticsData } = useSelector(
+    (state: RootState) => state
+  );
   */
 
   if (validateWorkflowName(workflowDetails.workflowName) === false)
@@ -90,9 +93,11 @@ const ChooseWorkflow: React.FC = () => {
   const selectWorkflow = (index: number) => {
     template.selectTemplate({ selectedTemplateID: index, isDisable: false });
 
-    const timeStampBasedWorkflowName: string = `argowf-chaos-${
-      workflowsList[index].title
-    }-${Math.round(new Date().getTime() / 1000)}`;
+    const timeStampBasedWorkflowName: string = workflowData.updatingSchedule
+      ? workflowData.name
+      : `argowf-chaos-${workflowsList[index].title}-${Math.round(
+          new Date().getTime() / 1000
+        )}`;
 
     workflow.setWorkflowDetails({
       name: timeStampBasedWorkflowName,
@@ -117,21 +122,34 @@ const ChooseWorkflow: React.FC = () => {
   useEffect(() => {
     const index = selectedTemplateID;
 
-    const timeStampBasedWorkflowName: string = `argowf-chaos-${
-      workflowsList[index].title
-    }-${Math.round(new Date().getTime() / 1000)}`;
+    const timeStampBasedWorkflowName: string = workflowData.updatingSchedule
+      ? workflowData.name
+      : `argowf-chaos-${workflowsList[index].title}-${Math.round(
+          new Date().getTime() / 1000
+        )}`;
     workflow.setWorkflowDetails({
+      ...workflowData,
       name: timeStampBasedWorkflowName,
-      link: workflowsList[index].chaosWkfCRDLink,
-      id: workflowsList[index].workflowID,
-      yaml: 'none',
-      description: workflowsList[index].description,
-      isCustomWorkflow: workflowsList[index].isCustom,
+      link: workflowData.updatingSchedule
+        ? 'none'
+        : workflowsList[index].chaosWkfCRDLink,
+      id: workflowData.updatingSchedule
+        ? 'none'
+        : workflowsList[index].workflowID,
+      yaml: workflowData.updatingSchedule ? workflowData.yaml : 'none',
+      description: workflowData.updatingSchedule
+        ? workflowData.description
+        : workflowsList[index].description,
+      isCustomWorkflow: workflowData.updatingSchedule
+        ? workflowData.isCustomWorkflow
+        : workflowsList[index].isCustom,
     });
 
     setWorkflowData({
       workflowName: timeStampBasedWorkflowName,
-      workflowDesc: workflowsList[index].description,
+      workflowDesc: workflowData.updatingSchedule
+        ? workflowData.description
+        : workflowsList[index].description,
     });
   }, [isDisable]);
 

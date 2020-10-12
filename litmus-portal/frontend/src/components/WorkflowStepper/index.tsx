@@ -58,7 +58,7 @@ function QontoStepIcon(props: StepIconProps) {
           active ? classes.active : classes.completed
         }`}
       >
-        <img src="./icons/NotPass.png" alt="Not Completed Icon" />
+        <img src="/icons/NotPass.png" alt="Not Completed Icon" />
       </div>
     );
   }
@@ -116,11 +116,13 @@ function getStepContent(
 
 const CustomStepper = () => {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
   const { t } = useTranslation();
   const template = useActions(TemplateSelectionActions);
   const workflowData: WorkflowData = useSelector(
     (state: RootState) => state.workflowData
+  );
+  const [activeStep, setActiveStep] = React.useState(
+    workflowData.updatingSchedule ? 4 : 0
   );
   const {
     id,
@@ -233,7 +235,7 @@ const CustomStepper = () => {
         arr.push({ experimentName: test, weight: value });
       });
       workflow.setWorkflowDetails({
-        weights: arr,
+        weights: workflowData.updatingSchedule ? workflowData.weights : arr,
       });
       if (arr.length === 0) {
         setinValidYaml(true);
@@ -422,9 +424,14 @@ const CustomStepper = () => {
           {/* Control Buttons */}
           {activeStep !== 0 ? (
             <div className={classes.buttonGroup}>
-              <ButtonOutline isDisabled={false} handleClick={handleBack}>
-                <Typography>Back</Typography>
-              </ButtonOutline>
+              {(workflowData.updatingSchedule && activeStep !== 1) ||
+              (workflowData.updatingSchedule === false && activeStep !== 0) ? (
+                <ButtonOutline isDisabled={false} handleClick={handleBack}>
+                  <Typography>Back</Typography>
+                </ButtonOutline>
+              ) : (
+                <></>
+              )}
               {activeStep === steps.length - 1 ? (
                 <ButtonFilled handleClick={handleOpen} isPrimary>
                   <div>Finish</div>
@@ -439,7 +446,7 @@ const CustomStepper = () => {
                     Next
                     <img
                       alt="next"
-                      src="icons/nextArrow.svg"
+                      src="/icons/nextArrow.svg"
                       className={classes.nextArrow}
                     />
                   </div>

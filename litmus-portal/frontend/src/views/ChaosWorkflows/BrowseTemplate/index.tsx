@@ -5,11 +5,13 @@ import ButtonOutlined from '../../../components/Button/ButtonOutline';
 import Scaffold from '../../../containers/layouts/Scaffold';
 import { preDefinedWorkflowData } from '../../../models/predefinedWorkflow';
 import { LocationState } from '../../../models/routerModel';
+import useActions from '../../../redux/actions';
 import { history } from '../../../redux/configureStore';
 import ExperimentDetails from './ExperimentDetails';
 import Head from './Head';
 import Recommendation from './Recommendation';
 import useStyles from './styles';
+import * as WorkflowActions from '../../../redux/actions/workflow';
 
 interface LocationObjectProps {
   workflowData: preDefinedWorkflowData;
@@ -25,7 +27,7 @@ const BrowseAWorkflow: React.FC<BrowseTemplateProps> = ({ location }) => {
   const classes = useStyles();
 
   const { workflowData, testNames, testWeights } = location.state;
-
+  const workflow = useActions(WorkflowActions);
   return (
     <Scaffold>
       <div className={classes.root}>
@@ -66,7 +68,12 @@ const BrowseAWorkflow: React.FC<BrowseTemplateProps> = ({ location }) => {
             </ButtonOutlined>
             <ButtonFilled
               isPrimary={false}
-              handleClick={() => history.push('/create-workflow')}
+              handleClick={() => {
+                workflow.setWorkflowDetails({
+                  updatingSchedule: false,
+                });
+                history.push('/create-workflow');
+              }}
             >
               <>Schedule this template</>
             </ButtonFilled>

@@ -13,15 +13,24 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import moment from 'moment';
 import React from 'react';
 import cronstrue from 'cronstrue';
+import YAML from 'yaml';
 import { ScheduleWorkflow } from '../../../models/graphql/scheduleData';
 import useStyles from './styles';
 import ExperimentPoints from './ExperimentPoints';
+import { history } from '../../../redux/configureStore';
+import useActions from '../../../redux/actions';
+import * as WorkflowActions from '../../../redux/actions/workflow';
+import { getWeekDayName, setScheduleType } from './scheduleTypeUtils';
 
 interface TableDataProps {
   data: ScheduleWorkflow;
   deleteRow: (wfid: string) => void;
 }
 
+interface Weights {
+  experimentName: string;
+  weight: number;
+}
 const TableData: React.FC<TableDataProps> = ({ data, deleteRow }) => {
   const classes = useStyles();
   // States for PopOver to display Experiment Weights
@@ -54,6 +63,64 @@ const TableData: React.FC<TableDataProps> = ({ data, deleteRow }) => {
     const resDate = moment(updated).format('DD MMM YYYY');
     if (date) return resDate;
     return 'Date not available';
+  };
+
+  const workflow = useActions(WorkflowActions);
+
+  const editSchedule = () => {
+    const doc = new YAML.Document();
+    const a: Weights[] = [];
+    for (let i = 0; i < data.weightages.length; i++) {
+      a.push({
+        experimentName: data.weightages[i].experiment_name,
+        weight: data.weightages[i].weightage,
+      });
+    }
+    doc.contents = JSON.parse(data.workflow_manifest);
+    const cron = data.cronSyntax.split(' ');
+    const minutes = cron[0];
+    const hours = cron[1];
+    const dayOfMonth = cron[2];
+    const month = cron[3];
+    const dayOfWeek = cron[4];
+    workflow.setWorkflowDetails({
+      name: data.workflow_name,
+      yaml: doc.toString(),
+      id: 0,
+      description: data.workflow_description,
+      weights: a,
+      isCustomWorkflow: data.isCustomWorkflow,
+      clusterid: data.cluster_id,
+      cronSyntax: data.cronSyntax,
+      scheduleType: {
+        scheduleOnce: data.cronSyntax === '' ? 'now' : 'recurringSchedule',
+        recurringSchedule:
+          data.cronSyntax === ''
+            ? ''
+            : setScheduleType(dayOfMonth, month, dayOfWeek),
+      },
+      scheduleInput: {
+        hour_interval:
+          minutes !== '*' && minutes !== '' ? parseInt(minutes, 10) : 0,
+        day:
+          dayOfMonth !== '*' && dayOfMonth !== undefined
+            ? parseInt(dayOfMonth, 10)
+            : 1,
+        weekday: getWeekDayName(dayOfWeek),
+        time:
+          hours !== '*' &&
+          minutes !== '*' &&
+          hours !== undefined &&
+          minutes !== undefined
+            ? new Date(
+                new Date().setHours(parseInt(hours, 10), parseInt(minutes, 10))
+              )
+            : new Date(),
+        date: new Date(),
+      },
+      updatingSchedule: true,
+    });
+    history.push(`/workflows/schedule/${data.workflow_id}`);
   };
 
   return (
@@ -150,6 +217,18 @@ const TableData: React.FC<TableDataProps> = ({ data, deleteRow }) => {
           open={open}
           onClose={handleClose}
         >
+          <MenuItem value="Analysis" onClick={() => editSchedule()}>
+            <div className={classes.expDiv}>
+              <img
+                src="/icons/edit.svg"
+                alt="Edit Schedule"
+                className={classes.btnImg}
+              />
+              <Typography data-cy="editSchedule" className={classes.btnText}>
+                Edit Schedule
+              </Typography>
+            </div>
+          </MenuItem>
           <MenuItem
             value="Analysis"
             onClick={() => deleteRow(data.workflow_id)}

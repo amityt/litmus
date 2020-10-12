@@ -27,6 +27,7 @@ const initialState: WorkflowData = {
     time: new Date(Date.now()),
     date: new Date(Date.now()),
   },
+  updatingSchedule: false,
 };
 
 export const workflowData = createReducer<WorkflowData>(initialState, {

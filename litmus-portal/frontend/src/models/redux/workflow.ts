@@ -28,6 +28,7 @@ export interface WorkflowData {
   cronSyntax: string;
   scheduleType: scheduleType;
   scheduleInput: scheduleInput;
+  updatingSchedule: boolean;
 }
 
 export enum WorkflowActions {
