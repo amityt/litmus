@@ -32,6 +32,7 @@ export interface WorkflowData {
   link: string;
   yaml: string;
   id: string;
+  workflow_id?: string;
   description: string;
   weights: experimentMap[];
   isCustomWorkflow: boolean;

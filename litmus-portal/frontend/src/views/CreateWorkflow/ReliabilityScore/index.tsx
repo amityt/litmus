@@ -95,7 +95,7 @@ const ReliablityScore = () => {
                 data-cy="testRunButton"
               >
                 <div className={classes.buttonOutlineDiv}>
-                  <img src="icons/video.png" alt="Play icon" />
+                  <img src="/icons/video.png" alt="Play icon" />
                   <Typography className={classes.buttonOutlineText}>
                     {t('createWorkflow.reliabilityScore.button.demo')}
                   </Typography>

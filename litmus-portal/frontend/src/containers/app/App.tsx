@@ -85,7 +85,7 @@ const Routes: React.FC<RoutesProps> = ({ isOwner, isProjectAvailable }) => {
         />
         <Route
           exact
-          path="/workflows/schedule/:scheduleId"
+          path="/workflows/schedule/:projectId/:workflowName"
           component={SchedulePage}
         />
         <Route

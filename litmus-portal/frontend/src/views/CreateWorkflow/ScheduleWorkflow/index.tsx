@@ -291,7 +291,7 @@ const ScheduleWorkflow: React.FC = () => {
             </div>
           </div>
           <img
-            src="./icons/calendar.svg"
+            src="/icons/calendar.svg"
             alt="calendar"
             className={classes.calIcon}
           />

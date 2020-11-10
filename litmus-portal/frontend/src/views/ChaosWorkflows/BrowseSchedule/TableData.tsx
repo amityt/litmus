@@ -16,10 +16,16 @@ import cronstrue from 'cronstrue';
 import { ScheduleWorkflow } from '../../../models/graphql/scheduleData';
 import useStyles from './styles';
 import ExperimentPoints from './ExperimentPoints';
+import { history } from '../../../redux/configureStore';
 
 interface TableDataProps {
   data: ScheduleWorkflow;
   deleteRow: (wfid: string) => void;
+}
+
+interface Weights {
+  experimentName: string;
+  weight: number;
 }
 
 const TableData: React.FC<TableDataProps> = ({ data, deleteRow }) => {
@@ -54,6 +60,12 @@ const TableData: React.FC<TableDataProps> = ({ data, deleteRow }) => {
     const resDate = moment(updated).format('DD MMM YYYY');
     if (date) return resDate;
     return 'Date not available';
+  };
+
+  const editSchedule = () => {
+    history.push(
+      `/workflows/schedule/${data.project_id}/${data.workflow_name}`
+    );
   };
 
   return (
@@ -150,6 +162,18 @@ const TableData: React.FC<TableDataProps> = ({ data, deleteRow }) => {
           open={open}
           onClose={handleClose}
         >
+          <MenuItem value="Analysis" onClick={() => editSchedule()}>
+            <div className={classes.expDiv}>
+              <img
+                src="/icons/Edit.svg"
+                alt="Edit Schedule"
+                className={classes.btnImg}
+              />
+              <Typography data-cy="editSchedule" className={classes.btnText}>
+                Edit Schedule
+              </Typography>
+            </div>
+          </MenuItem>
           <MenuItem
             value="Analysis"
             onClick={() => deleteRow(data.workflow_id)}

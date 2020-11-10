@@ -98,7 +98,7 @@ function getStepContent(
         <ChooseAWorkflowCluster gotoStep={(page: number) => gotoStep(page)} />
       );
     case 1:
-      return <ChooseWorkflow />;
+      return <ChooseWorkflow isEditable />;
     case 2:
       return <TuneWorkflow />;
     case 3:
@@ -106,7 +106,9 @@ function getStepContent(
     case 4:
       return <ScheduleWorkflow />;
     case 5:
-      return <VerifyCommit gotoStep={(page: number) => gotoStep(page)} />;
+      return (
+        <VerifyCommit isEditable gotoStep={(page: number) => gotoStep(page)} />
+      );
     default:
       return (
         <ChooseAWorkflowCluster gotoStep={(page: number) => gotoStep(page)} />

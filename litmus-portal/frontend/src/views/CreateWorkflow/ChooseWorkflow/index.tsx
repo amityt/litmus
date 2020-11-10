@@ -15,10 +15,13 @@ import * as WorkflowActions from '../../../redux/actions/workflow';
 import { RootState } from '../../../redux/reducers';
 import { validateWorkflowName } from '../../../utils/validate';
 import useStyles, { CssTextField } from './styles';
+import { WorkflowData } from '../../../models/redux/workflow';
 
-// import { getWkfRunCount } from "../../utils";
+interface ChooseWorkflowProps {
+  isEditable?: boolean;
+}
 
-const ChooseWorkflow: React.FC = () => {
+const ChooseWorkflow: React.FC<ChooseWorkflowProps> = ({ isEditable }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -29,6 +32,10 @@ const ChooseWorkflow: React.FC = () => {
   );
   const selectedTemplateID = useSelector(
     (state: RootState) => state.selectTemplate.selectedTemplateID
+  );
+
+  const workflowData: WorkflowData = useSelector(
+    (state: RootState) => state.workflowData
   );
 
   const [open, setOpen] = React.useState(false);
@@ -92,17 +99,23 @@ const ChooseWorkflow: React.FC = () => {
   const selectWorkflow = (index: number) => {
     template.selectTemplate({ selectedTemplateID: index, isDisable: false });
 
-    const timeStampBasedWorkflowName: string = `argowf-chaos-${
-      workflowsList[index].title
-    }-${Math.round(new Date().getTime() / 1000)}`;
+    const timeStampBasedWorkflowName: string = isEditable
+      ? `argowf-chaos-${workflowsList[index].title}-${Math.round(
+          new Date().getTime() / 1000
+        )}`
+      : workflowData.name;
 
     workflow.setWorkflowDetails({
       name: timeStampBasedWorkflowName,
       link: workflowsList[index].chaosWkfCRDLink,
       id: workflowsList[index].workflowID,
       yaml: 'none',
-      description: workflowsList[index].description,
-      isCustomWorkflow: workflowsList[index].isCustom,
+      description: isEditable
+        ? workflowsList[index].description
+        : workflowData.description,
+      isCustomWorkflow: isEditable
+        ? workflowsList[index].isCustom
+        : workflowData.isCustomWorkflow,
     });
 
     setWorkflowData({
@@ -119,16 +132,20 @@ const ChooseWorkflow: React.FC = () => {
   useEffect(() => {
     const index = selectedTemplateID;
 
-    const timeStampBasedWorkflowName: string = `argowf-chaos-${
-      workflowsList[index].title
-    }-${Math.round(new Date().getTime() / 1000)}`;
+    const timeStampBasedWorkflowName: string = isEditable
+      ? `argowf-chaos-${workflowsList[index].title}-${Math.round(
+          new Date().getTime() / 1000
+        )}`
+      : workflowData.name;
     workflow.setWorkflowDetails({
       name: timeStampBasedWorkflowName,
       link: workflowsList[index].chaosWkfCRDLink,
       id: workflowsList[index].workflowID,
       yaml: 'none',
       description: workflowsList[index].description,
-      isCustomWorkflow: workflowsList[index].isCustom,
+      isCustomWorkflow: isEditable
+        ? workflowsList[index].isCustom
+        : workflowData.isCustomWorkflow,
     });
 
     setWorkflowData({
@@ -211,6 +228,7 @@ const ChooseWorkflow: React.FC = () => {
                 validationError={validateWorkflowName(
                   workflowDetails.workflowName
                 )}
+                disabled={!isEditable}
                 // className={classes.textfieldworkflowname}
                 handleChange={WorkflowNameChangeHandler}
                 value={workflowDetails.workflowName}

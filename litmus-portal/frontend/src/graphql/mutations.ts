@@ -97,3 +97,15 @@ export const SYNC_REPO = gql`
     }
   }
 `;
+
+export const UPDATE_SCHEDULE = gql`
+  mutation updateChaos($ChaosWorkFlowInput: ChaosWorkFlowInput!) {
+    updateChaosWorkflow(input: $ChaosWorkFlowInput) {
+      workflow_id
+      workflow_name
+      workflow_description
+      isCustomWorkflow
+      cronSyntax
+    }
+  }
+`;

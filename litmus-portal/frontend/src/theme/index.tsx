@@ -287,14 +287,14 @@ const theme = customTheme({
       mark: {
         marginLeft: -6.8,
         paddingTop: 1.8,
-        backgroundImage: `url(${'./icons/arrow.svg'})`,
+        backgroundImage: `url(${'/icons/arrow.svg'})`,
         backgroundColor: 'none',
         '&[data-index="9"]': {
           backgroundImage: 'none',
         },
       },
       markActive: {
-        backgroundImage: `url(${'./icons/arrow.svg'})`,
+        backgroundImage: `url(${'/icons/arrow.svg'})`,
         backgroundColor: 'none',
       },
       markLabel: {
