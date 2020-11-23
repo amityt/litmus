@@ -2,6 +2,8 @@
 
 # ENV VAR SETUP
 export DB_SERVER=mongodb://localhost:27017
+export DB_USER=admin
+export DB_PASSWORD=1234
 export JWT_SECRET=litmus-portal@123
 export PORTAL_ENDPOINT=http://localhost:8080
 export SELF_CLUSTER=false # self-cluster needs k8s env

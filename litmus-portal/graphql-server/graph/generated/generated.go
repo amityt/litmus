@@ -2016,111 +2016,117 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	&ast.Source{Name: "graph/myhub.graphqls", Input: `type MyHub {
-  id: ID!
-  RepoURL: String!
-  RepoBranch: String!
-  ProjectID: String!
-  HubName: String!
-  CreatedAt: String!
-  UpdatedAt: String!
+	id: ID!
+	RepoURL: String!
+	RepoBranch: String!
+	ProjectID: String!
+	HubName: String!
+	CreatedAt: String!
+	UpdatedAt: String!
 }
 
 type Charts {
-  Charts: [Chart!]!
+	Charts: [Chart!]!
 }
 
 type Chart {
-  ApiVersion: String!
-  Kind: String!
-  Metadata: Metadata!
-  Spec: Spec!
-  PackageInfo: PackageInformation!
-  Experiments: [Chart!]!
+	ApiVersion: String!
+	Kind: String!
+	Metadata: Metadata!
+	Spec: Spec!
+	PackageInfo: PackageInformation!
+	Experiments: [Chart!]!
 }
 
 type Maintainer {
-  Name: String!
-  Email: String!
+	Name: String!
+	Email: String!
 }
 
 type Link {
-  Name: String!
-  Url: String!
+	Name: String!
+	Url: String!
 }
 
 type Metadata {
-  Name: String!
-  Version: String!
-  Annotations: Annotation!
+	Name: String!
+	Version: String!
+	Annotations: Annotation!
 }
 
 type Annotation {
-  Categories: String!
-  Vendor: String!
-  CreatedAt: String!
-  Repository: String!
-  Support: String!
-  ChartDescription: String!
+	Categories: String!
+	Vendor: String!
+	CreatedAt: String!
+	Repository: String!
+	Support: String!
+	ChartDescription: String!
 }
 
 type Spec {
-  DisplayName: String!
-  CategoryDescription: String!
-  Keywords: [String!]!
-  Maturity: String!
-  Maintainers: [Maintainer!]!
-  MinKubeVersion: String!
-  Provider: String!
-  Links: [Link!]!
-  Experiments: [String!]!
-  ChaosExpCRDLink: String!
-  Platforms: [String!]!
-  ChaosType: String
+	DisplayName: String!
+	CategoryDescription: String!
+	Keywords: [String!]!
+	Maturity: String!
+	Maintainers: [Maintainer!]!
+	MinKubeVersion: String!
+	Provider: String!
+	Links: [Link!]!
+	Experiments: [String!]!
+	ChaosExpCRDLink: String!
+	Platforms: [String!]!
+	ChaosType: String
 }
 
 type Provider {
-  Name: String!
+	Name: String!
 }
 
 type PackageInformation {
-  PackageName: String!
-  Experiments: [Experiments!]!
+	PackageName: String!
+	Experiments: [Experiments!]!
 }
 
 type Experiments {
-  Name: String!
-  CSV: String!
-  Desc: String!
+	Name: String!
+	CSV: String!
+	Desc: String!
 }
 
 type MyHubStatus {
-  id: ID!
-  RepoURL: String!
-  RepoBranch: String!
-  IsAvailable: Boolean!
-  TotalExp: String!
-  HubName: String!
+	id: ID!
+	RepoURL: String!
+	RepoBranch: String!
+	IsAvailable: Boolean!
+	TotalExp: String!
+	HubName: String!
 }
 
 input CreateMyHub {
-  HubName: String!
-  RepoURL: String!
-  RepoBranch: String!
+	HubName: String!
+	RepoURL: String!
+	RepoBranch: String!
+	isPrivate: Boolean
+	UserName: String
+	Token: String
 }
 
 input ExperimentInput {
-  ProjectID: String!
-  ChartName: String!
-  ExperimentName: String!
-  HubName: String!
-  FileType: String
+	ProjectID: String!
+	ChartName: String!
+	ExperimentName: String!
+	HubName: String!
+	FileType: String
 }
 
 input CloningInput {
-  HubName: String!
-  ProjectID: String!
-  RepoBranch: String!
-  RepoURL: String!
+	HubName: String!
+	ProjectID: String!
+	RepoBranch: String!
+	RepoURL: String!
+	isPrivate: Boolean
+	UserName: String
+	Token: String
 }
 `, BuiltIn: false},
 	&ast.Source{Name: "graph/project.graphqls", Input: `type Project {
@@ -11672,6 +11678,24 @@ func (ec *executionContext) unmarshalInputCloningInput(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
+		case "isPrivate":
+			var err error
+			it.IsPrivate, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UserName":
+			var err error
+			it.UserName, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Token":
+			var err error
+			it.Token, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -11855,6 +11879,24 @@ func (ec *executionContext) unmarshalInputCreateMyHub(ctx context.Context, obj i
 		case "RepoBranch":
 			var err error
 			it.RepoBranch, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "isPrivate":
+			var err error
+			it.IsPrivate, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "UserName":
+			var err error
+			it.UserName, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Token":
+			var err error
+			it.Token, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

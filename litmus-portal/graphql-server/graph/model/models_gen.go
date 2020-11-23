@@ -58,10 +58,13 @@ type Charts struct {
 }
 
 type CloningInput struct {
-	HubName    string `json:"HubName"`
-	ProjectID  string `json:"ProjectID"`
-	RepoBranch string `json:"RepoBranch"`
-	RepoURL    string `json:"RepoURL"`
+	HubName    string  `json:"HubName"`
+	ProjectID  string  `json:"ProjectID"`
+	RepoBranch string  `json:"RepoBranch"`
+	RepoURL    string  `json:"RepoURL"`
+	IsPrivate  *bool   `json:"isPrivate"`
+	UserName   *string `json:"UserName"`
+	Token      *string `json:"Token"`
 }
 
 type Cluster struct {
@@ -137,9 +140,12 @@ type ClusterInput struct {
 }
 
 type CreateMyHub struct {
-	HubName    string `json:"HubName"`
-	RepoURL    string `json:"RepoURL"`
-	RepoBranch string `json:"RepoBranch"`
+	HubName    string  `json:"HubName"`
+	RepoURL    string  `json:"RepoURL"`
+	RepoBranch string  `json:"RepoBranch"`
+	IsPrivate  *bool   `json:"isPrivate"`
+	UserName   *string `json:"UserName"`
+	Token      *string `json:"Token"`
 }
 
 type CreateUserInput struct {

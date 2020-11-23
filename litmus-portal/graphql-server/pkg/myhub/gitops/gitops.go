@@ -1,6 +1,7 @@
 package gitops
 
 import (
+	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 	"fmt"
 	"os"
 	"strings"
@@ -20,6 +21,8 @@ type GitConfig struct {
 	RemoteCommit  string
 	HubName       string
 	Branch        string
+	UserName 	  *string
+	Token         *string
 }
 
 var (
@@ -48,6 +51,8 @@ func GitConfigConstruct(repoData model.CloningInput) GitConfig {
 		RepositoryURL: repoData.RepoURL,
 		RemoteName:    "origin",
 		Branch:        repoData.RepoBranch,
+		UserName:	   repoData.UserName,
+		Token:         repoData.Token,
 	}
 
 	return gitConfig
@@ -56,12 +61,21 @@ func GitConfigConstruct(repoData model.CloningInput) GitConfig {
 //GitClone Trigger is reponsible for setting off the go routine for git-op
 func GitClone(repoData model.CloningInput) error {
 	gitConfig := GitConfigConstruct(repoData)
-	_, err := gitConfig.getChaosChartRepo()
-	if err != nil {
-		fmt.Print("Error in cloning")
-		return err
+	fmt.Println(repoData.IsPrivate)
+	if *repoData.IsPrivate == true  {
+		_, err := gitConfig.getPrivateChaosChartRepo()
+		if err != nil {
+			fmt.Print("Error in cloning")
+			return err
+		}
+	} else {
+		_, err := gitConfig.getChaosChartRepo()
+		if err != nil {
+			fmt.Print("Error in cloning")
+			return err
+		}
+		
 	}
-	//Successfully Cloned
 	return nil
 }
 
@@ -84,6 +98,23 @@ func (c GitConfig) getChaosChartRepo() (string, error) {
 	os.RemoveAll(ClonePath)
 	_, err := git.PlainClone(ClonePath, false, &git.CloneOptions{
 		URL: c.RepositoryURL, Progress: os.Stdout,
+		ReferenceName: plumbing.NewBranchReferenceName(c.Branch),
+	})
+	return c.Branch, err
+}
+
+//getPrivateChaosChartVersion is responsible for plain cloning the private repository
+func (c GitConfig) getPrivateChaosChartRepo() (string, error) {
+	ClonePath := GetClonePath(c)
+	os.RemoveAll(ClonePath)
+
+	_, err := git.PlainClone(ClonePath, false, &git.CloneOptions{
+		Auth: &http.BasicAuth{
+			Username: *c.UserName,
+			Password: *c.Token,
+		},
+		URL:      c.RepositoryURL,
+		Progress: os.Stdout,
 		ReferenceName: plumbing.NewBranchReferenceName(c.Branch),
 	})
 	return c.Branch, err

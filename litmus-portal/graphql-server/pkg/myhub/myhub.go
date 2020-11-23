@@ -30,6 +30,9 @@ func AddMyHub(ctx context.Context, myhub model.CreateMyHub, projectID string) (*
 		RepoBranch: myhub.RepoBranch,
 		RepoURL:    myhub.RepoURL,
 		HubName:    myhub.HubName,
+		IsPrivate:  myhub.IsPrivate,
+		UserName:   myhub.UserName, 
+		Token:      myhub.Token,
 	}
 
 	//Cloning the repository at a path from myhub link structure.
