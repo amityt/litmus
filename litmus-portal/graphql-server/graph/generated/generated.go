@@ -3858,7 +3858,7 @@ type Subscription {
   #It is used to listen cluster operation request from the graphql server
   clusterConnect(clusterInfo: ClusterIdentity!): ClusterAction!
 
-  getKubeObject(kubeObjectRequest: KubeObjectRequest!): KubeObjectResponse! @authorized
+  getKubeObject(kubeObjectRequest: KubeObjectRequest!): KubeObjectResponse!
 }
 `, BuiltIn: false},
 	&ast.Source{Name: "graph/usermanagement.graphqls", Input: `type User {
@@ -13674,28 +13674,8 @@ func (ec *executionContext) _Subscription_getKubeObject(ctx context.Context, fie
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		directive0 := func(rctx context.Context) (interface{}, error) {
-			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Subscription().GetKubeObject(rctx, args["kubeObjectRequest"].(model.KubeObjectRequest))
-		}
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			if ec.directives.Authorized == nil {
-				return nil, errors.New("directive authorized is not implemented")
-			}
-			return ec.directives.Authorized(ctx, nil, directive0)
-		}
-
-		tmp, err := directive1(rctx)
-		if err != nil {
-			return nil, err
-		}
-		if tmp == nil {
-			return nil, nil
-		}
-		if data, ok := tmp.(<-chan *model.KubeObjectResponse); ok {
-			return data, nil
-		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be <-chan *github.com/litmuschaos/litmus/litmus-portal/graphql-server/graph/model.KubeObjectResponse`, tmp)
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().GetKubeObject(rctx, args["kubeObjectRequest"].(model.KubeObjectRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

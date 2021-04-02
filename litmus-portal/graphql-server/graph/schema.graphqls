@@ -398,5 +398,5 @@ type Subscription {
   #It is used to listen cluster operation request from the graphql server
   clusterConnect(clusterInfo: ClusterIdentity!): ClusterAction!
 
-  getKubeObject(kubeObjectRequest: KubeObjectRequest!): KubeObjectResponse! @authorized
+  getKubeObject(kubeObjectRequest: KubeObjectRequest!): KubeObjectResponse!
 }
