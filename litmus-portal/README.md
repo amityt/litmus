@@ -13,6 +13,7 @@ ChaosCenter provides console and UI experience for managing, monitoring, and eve
 - Kublr
 - Minikube
 - KIND
+- Docker-Desktop
 
 ## **Pre-requisites**
 
